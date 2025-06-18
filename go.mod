@@ -1,4 +1,4 @@
-module github.com/romrossi/component-api
+module github.com/romrossi/component-service
 
 go 1.24.4
 

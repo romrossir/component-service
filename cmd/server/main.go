@@ -4,21 +4,16 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/romrossi/component-api/internal/component"
-	"github.com/romrossi/component-api/internal/db"
+	"github.com/romrossi/component-service/internal/component"
+	"github.com/romrossi/component-service/internal/db"
 )
 
 func main() {
-	// connStr := "postgres://user:password@localhost/dbname?sslmode=disable"
-	connStr := "postgres://postgres:postgres@localhost/component?sslmode=disable"
-	database, err := db.Connect(connStr)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer database.Close()
+	// Setup DB connection
+	db.InitDB()
 
-	handler := component.NewHandler(database)
-
+	// Setup HTTP routing
+	handler := component.NewHandler(db.GetDB())
 	http.HandleFunc("/components", handler.ComponentsHandler)
 	http.HandleFunc("/components/", handler.ComponentHandler)
 
