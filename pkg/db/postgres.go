@@ -9,12 +9,10 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var DB *sql.DB
-
 // InitDB initializes the database connection.
 // It expects database connection details from environment variables:
 // DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, DB_SSLMODE
-func InitDB() {
+func Connect() *sql.DB {
 	dbHost := getEnv("DB_HOST", "localhost")
 	dbPort := getEnv("DB_PORT", "5432")
 	dbUser := getEnv("DB_USER", "postgres")
@@ -33,28 +31,14 @@ func InitDB() {
 	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		dbHost, dbPort, dbUser, dbPassword, dbName, dbSSLMode)
 
-	var err error
-	DB, err = sql.Open("postgres", connStr)
+	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatalf("Error opening database connection: %v", err)
+		log.Fatal("db connect error:", err)
 	}
-
-	err = DB.Ping()
-	if err != nil {
-		log.Fatalf("Error pinging database: %v. Please ensure PostgreSQL is running and accessible, and the connection details are correct.", err)
+	if err := db.Ping(); err != nil {
+		log.Fatal("db ping error:", err)
 	}
-
-	log.Println("Successfully connected to the PostgreSQL database!")
-}
-
-func GetDB() *sql.DB {
-	if DB == nil {
-		// This case should ideally not happen if InitDB is called at application start.
-		// Consider how to handle this based on your application's lifecycle.
-		// For now, we'll log a fatal error.
-		log.Fatal("Database connection is not initialized. Call InitDB first.")
-	}
-	return DB
+	return db
 }
 
 func getEnv(key, fallback string) string {
