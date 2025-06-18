@@ -15,7 +15,8 @@ func main() {
 	// Wire up dependencies
 	repo := &component.PostgresRepository{DB: sqlDB}
 	service := &component.DefaultService{Repo: repo}
-	handler := &component.Handler{Service: service}
+	cachedService := component.NewCachedService(service)
+	handler := &component.Handler{Service: cachedService}
 
 	// Register HTTP router
 	http.Handle("/components", handler)
