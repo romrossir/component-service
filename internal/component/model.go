@@ -1,7 +1,7 @@
 package component
 
 type Component struct {
-	ID      int    `json:"id"`
-	Name    string `json:"name"`
-	Version string `json:"version"`
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	ParentID int    `json:"parent_id"`
 }

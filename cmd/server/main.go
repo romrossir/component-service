@@ -9,7 +9,8 @@ import (
 )
 
 func main() {
-	connStr := "postgres://user:password@localhost/dbname?sslmode=disable"
+	// connStr := "postgres://user:password@localhost/dbname?sslmode=disable"
+	connStr := "postgres://postgres:postgres@localhost/component?sslmode=disable"
 	database, err := db.Connect(connStr)
 	if err != nil {
 		log.Fatal(err)
